@@ -42,7 +42,13 @@ MyTrainer.prototype.linear =  function(options) {
     iterations: 100000,
     log: false,
     shuffle: true,
-    cost: Trainer.cost.MSE
+    cost:  function(target, output) {
+      var mse = 0;
+      for (var i in output)
+        mse += Math.abs(target[i] - output[i]);
+
+      return mse / output.length;
+    }
   };
 
   if (options)
