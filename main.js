@@ -42,42 +42,35 @@ MyTrainer.prototype.linear =  function(options) {
     iterations: 100000,
     log: false,
     shuffle: true,
-    cost:  function(target, output) {
-      var mse = 0;
-      for (var i in output)
-        mse += Math.abs(target[i] - output[i]);
-
-      return mse / output.length;
+    cost:  function(input, output) {
+      return Trainer.cost.MSE(input, output);
     }
   };
 
   if (options)
     for (var i in options)
       defaults[i] = options[i];
+  
+  var pairs = [];
+  var maxCount = 5;
 
-  return this.train([{
-    input: [0, 0],
-    output: [0]
-  }, {
-    input: [0, 1],
-    output: [1]
-  }, {
-    input: [1, 0],
-    output: [1]
-  }, {
-    input: [1, 1],
-    output: [1]
-  }], defaults);
+  for (var i=0; i<maxCount; i++) {
+    pairs.push({
+      input: [i/maxCount],
+      output: [i/maxCount]
+    });
+  }
+
+  return this.train(pairs, defaults);
 }
 
-
-var myPerceptron = new Perceptron(2, 16, 1);
+var myPerceptron = new Perceptron(1, 4, 1);
 var myTrainer = new MyTrainer(myPerceptron);
 
 console.log(JSON.stringify(myTrainer.linear())); // { error: 0.004998819355993572, iterations: 21871, time: 356 }
 
-console.log(myPerceptron.activate([0, 0])); // 0.0268581547421616
-console.log(myPerceptron.activate([0, 1])); // 0.02128894618097928
-console.log(myPerceptron.activate([1, 0])); // 0.9829673642853368
-console.log(myPerceptron.activate([1, 1])); // 0.9831714267395621
+console.log(myPerceptron.activate([0])); // 0.0268581547421616
+console.log(myPerceptron.activate([0.25])); // 0.02128894618097928
+console.log(myPerceptron.activate([0.5])); // 0.9829673642853368
+console.log(myPerceptron.activate([0.75])); // 0.9831714267395621
 
