@@ -6,21 +6,30 @@ var Neuron = synaptic.Neuron,
 	Architect = synaptic.Architect;
 
 
-function Perceptron(input, hidden, output)
+function Perceptron(input, hiddenSize, hiddenCount, output)
 {
 	// create the layers
 	var inputLayer = new Layer(input);
-	var hiddenLayer = new Layer(hidden);
 	var outputLayer = new Layer(output);
+  
+  var hiddenLayers = [];
+  
+  for (var i=0; i<hiddenCount; i++) {
+    hiddenLayers.push(new Layer(hiddenSize));
+  }
 
 	// connect the layers
-	inputLayer.project(hiddenLayer);
-	hiddenLayer.project(outputLayer);
+	inputLayer.project(hiddenLayers[0]);
+  var i = 1;
+  for (; i<hiddenCount; i++) {
+    hiddenLayers[i-1].project(hiddenLayers[i]);  
+  }
+  hiddenLayers[i-1].project(outputLayer);
 
 	// set the layers
 	this.set({
 		input: inputLayer,
-		hidden: [hiddenLayer],
+		hidden: hiddenLayers,
 		output: outputLayer
 	});
 }
@@ -52,9 +61,32 @@ MyTrainer.prototype.linear =  function(options) {
       defaults[i] = options[i];
   
   var pairs = [];
-  var maxCount = 25;
+  var maxCount = 10;
+  for (var i=0; i<=maxCount; i++) {
+    pairs.push({
+      input: [i/maxCount],
+      output: [i/maxCount]
+    });
+  }
 
-  for (var i=0; i<maxCount; i++) {
+  maxCount = 8;
+  for (var i=0; i<=maxCount; i++) {
+    pairs.push({
+      input: [i/maxCount],
+      output: [i/maxCount]
+    });
+  }
+
+  maxCount = 4;
+  for (var i=0; i<=maxCount; i++) {
+    pairs.push({
+      input: [i/maxCount],
+      output: [i/maxCount]
+    });
+  }
+
+  maxCount = 2;
+  for (var i=0; i<=maxCount; i++) {
     pairs.push({
       input: [i/maxCount],
       output: [i/maxCount]
@@ -64,14 +96,14 @@ MyTrainer.prototype.linear =  function(options) {
   return this.train(pairs, defaults);
 }
 
-var myPerceptron = new Perceptron(1, 8, 1);
+var myPerceptron = new Perceptron(1, 8, 2, 1);
 var myTrainer = new MyTrainer(myPerceptron);
 
-console.log(JSON.stringify(myTrainer.linear())); // { error: 0.004998819355993572, iterations: 21871, time: 356 }
+console.log(JSON.stringify(myTrainer.linear())); 
 
-console.log(myPerceptron.activate([0])); // 0.0268581547421616
-console.log(myPerceptron.activate([0.15])); // 0.0268581547421616
-console.log(myPerceptron.activate([0.25])); // 0.02128894618097928
-console.log(myPerceptron.activate([0.5])); // 0.9829673642853368
-console.log(myPerceptron.activate([0.75])); // 0.9831714267395621
+var counter = 10;
+for (var i=0; i<=counter; i++) {
+  var input = i/counter;
+  console.log(input + ' = ' + myPerceptron.activate([input])[0]); 
+}
 
