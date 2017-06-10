@@ -35,11 +35,8 @@ function MyTrainer(perceptron) {
 
 MyTrainer.prototype = new Trainer();
 MyTrainer.prototype.constructor = MyTrainer;
-MyTrainer.prototype.XOR =  function(options) {
+MyTrainer.prototype.linear =  function(options) {
   console.log("custom trainer");
-
-  if (this.network.inputs() != 2 || this.network.outputs() != 1)
-    throw new Error("Incompatible network (2 inputs, 1 output)");
 
   var defaults = {
     iterations: 100000,
@@ -54,12 +51,12 @@ MyTrainer.prototype.XOR =  function(options) {
 
   return this.train([{
     input: [0, 0],
+    output: [0]
+  }, {
+    input: [0, 1],
     output: [1]
   }, {
     input: [1, 0],
-    output: [1]
-  }, {
-    input: [0, 1],
     output: [1]
   }, {
     input: [1, 1],
@@ -68,13 +65,13 @@ MyTrainer.prototype.XOR =  function(options) {
 }
 
 
-var myPerceptron = new Perceptron(2,16,1);
+var myPerceptron = new Perceptron(2, 16, 1);
 var myTrainer = new MyTrainer(myPerceptron);
 
-myTrainer.XOR(); // { error: 0.004998819355993572, iterations: 21871, time: 356 }
+console.log(JSON.stringify(myTrainer.linear())); // { error: 0.004998819355993572, iterations: 21871, time: 356 }
 
-console.log(myPerceptron.activate([0,0])); // 0.0268581547421616
-console.log(myPerceptron.activate([1,0])); // 0.9829673642853368
-console.log(myPerceptron.activate([0,1])); // 0.9831714267395621
-console.log(myPerceptron.activate([1,1])); // 0.02128894618097928
+console.log(myPerceptron.activate([0, 0])); // 0.0268581547421616
+console.log(myPerceptron.activate([0, 1])); // 0.02128894618097928
+console.log(myPerceptron.activate([1, 0])); // 0.9829673642853368
+console.log(myPerceptron.activate([1, 1])); // 0.9831714267395621
 
