@@ -52,7 +52,7 @@ MyTrainer.prototype.linear =  function(options) {
       defaults[i] = options[i];
   
   var pairs = [];
-  var maxCount = 5;
+  var maxCount = 25;
 
   for (var i=0; i<maxCount; i++) {
     pairs.push({
@@ -64,12 +64,13 @@ MyTrainer.prototype.linear =  function(options) {
   return this.train(pairs, defaults);
 }
 
-var myPerceptron = new Perceptron(1, 4, 1);
+var myPerceptron = new Perceptron(1, 8, 1);
 var myTrainer = new MyTrainer(myPerceptron);
 
 console.log(JSON.stringify(myTrainer.linear())); // { error: 0.004998819355993572, iterations: 21871, time: 356 }
 
 console.log(myPerceptron.activate([0])); // 0.0268581547421616
+console.log(myPerceptron.activate([0.15])); // 0.0268581547421616
 console.log(myPerceptron.activate([0.25])); // 0.02128894618097928
 console.log(myPerceptron.activate([0.5])); // 0.9829673642853368
 console.log(myPerceptron.activate([0.75])); // 0.9831714267395621
